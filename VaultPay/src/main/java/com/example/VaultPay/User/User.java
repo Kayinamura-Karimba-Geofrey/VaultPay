@@ -1,15 +1,22 @@
-package com.example.vaultpay.user;
+package com.example.VaultPay.user;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User implements UserDetails {
 
     @Id
@@ -25,23 +32,19 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private boolean enabled = true;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
-
+    /* ========= Spring Security ========= */
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override public String getPassword() { return password; }
+    @Override public String getUsername() { return email; }
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled() { return enabled; }
+    @Override public boolean isEnabled() { return true; }
 }
