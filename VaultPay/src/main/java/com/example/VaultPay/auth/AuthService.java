@@ -1,14 +1,12 @@
 package com.vaultpay.auth;
 
 import com.vaultpay.auth.dto.*;
-import com.vaultpay.security.JwtService;
-import com.vaultpay.user.*;
-import com.vaultpay.wallet.*;
+import com.vaultpay.security.*;
+import com.vaultpay.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -16,28 +14,41 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final TokenBlacklistRepository blacklistRepository;
 
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponse login(LoginRequest request) {
 
-        User user = User.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
-                .createdAt(LocalDateTime.now())
-                .build();
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 
-        userRepository.save(user);
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
 
-        Wallet wallet = Wallet.builder()
-                .owner(user)
-                .balance(BigDecimal.ZERO)
-                .build();
+        return new AuthResponse(
+                jwtService.generateAccessToken(user.getEmail()),
+                jwtService.generateRefreshToken(user.getEmail())
+        );
+    }
 
-        walletRepository.save(wallet);
+    public AuthResponse refresh(RefreshRequest request) {
 
-        return new AuthResponse(jwtService.generateToken(user.getEmail()));
+        String email = jwtService.extractEmail(request.getRefreshToken());
+
+        return new AuthResponse(
+                jwtService.generateAccessToken(email),
+                request.getRefreshToken()
+        );
+    }
+
+    public void logout(String token) {
+        blacklistRepository.save(
+                TokenBlacklist.builder()
+                        .token(token)
+                        .invalidatedAt(LocalDateTime.now())
+                        .build()
+        );
     }
 }
