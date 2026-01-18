@@ -1,7 +1,7 @@
-package com.vaultpay.transaction;
+package com.example.VaultPay.transaction;
 
-import com.vaultpay.transaction.dto.*;
-import com.vaultpay.user.User;
+import com.example.VaultPay.transaction.dto.*;
+import com.example.VaultPay.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
