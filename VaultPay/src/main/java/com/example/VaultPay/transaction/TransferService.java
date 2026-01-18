@@ -50,7 +50,8 @@ public class TransferService {
         BigDecimal amount = request.getAmount();
         String reference = UUID.randomUUID().toString();
 
-        // 🔻 DEBIT
+
+
         senderWallet.setBalance(senderWallet.getBalance().subtract(amount));
         transactionRepository.save(
                 Transaction.builder()
