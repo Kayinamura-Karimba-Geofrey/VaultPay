@@ -1,6 +1,6 @@
-package com.vaultpay.transaction;
+package com.example.VaultPay.transaction;
 
-import com.vaultpay.wallet.Wallet;
+import com.example.VaultPay.wallet.Wallet;
 import jakarta.persistence.*;
 import lombok.*;
 
