@@ -1,7 +1,7 @@
-package com.vaultpay.transaction;
+package com.example.vaultpay.transaction;
 
-import com.vaultpay.transaction.dto.*;
-import com.vaultpay.wallet.*;
+import com.example.vaultpay.transaction.dto.*;
+import com.example.vaultpay.wallet.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class TransferService {
         BigDecimal amount = request.getAmount();
         String reference = UUID.randomUUID().toString();
 
-        // 🔻 DEBIT
+
         senderWallet.setBalance(senderWallet.getBalance().subtract(amount));
         transactionRepository.save(
                 Transaction.builder()
