@@ -1,6 +1,6 @@
-package com.vaultpay.transaction.dto;
+package com.example.VaultPay.transaction.dto;
 
-import com.vaultpay.transaction.TransactionType;
+import com.example.VaultPay.transaction.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package com.vaultpay.transaction.dto;
+package com.example.VaultPay.transaction.dto;
 
 import lombok.Getter;
 
