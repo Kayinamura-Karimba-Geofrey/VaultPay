@@ -1,8 +1,8 @@
-package com.vaultpay.auth;
+package com.example.VaultPay.auth;
 
-import com.vaultpay.auth.dto.*;
-import com.vaultpay.security.*;
-import com.vaultpay.user.UserRepository;
+import com.example.VaultPay.auth.dto.*;
+import com.example.VaultPay.security.*;
+import com.example.VaultPay.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

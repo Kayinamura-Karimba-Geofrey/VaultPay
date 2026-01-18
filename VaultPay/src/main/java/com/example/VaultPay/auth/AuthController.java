@@ -1,6 +1,6 @@
-package com.vaultpay.auth;
+package com.example.VaultPay.auth;
 
-import com.vaultpay.auth.dto.*;
+import com.example.VaultPay.auth.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

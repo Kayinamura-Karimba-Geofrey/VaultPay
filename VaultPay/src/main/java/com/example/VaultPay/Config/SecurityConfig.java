@@ -1,6 +1,6 @@
-package com.vaultpay.config;
+package com.example.VaultPay.config;
 
-import com.vaultpay.security.JwtAuthenticationFilter;
+import com.example.VaultPay.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.*;
