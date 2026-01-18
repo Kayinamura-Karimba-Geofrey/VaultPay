@@ -1,7 +1,7 @@
-package com.vaultpay.transaction;
+package com.example.VaultPay.transaction;
 
-import com.vaultpay.transaction.dto.TransactionResponse;
-import com.vaultpay.wallet.*;
+import com.example.VaultPay.transaction.dto.TransactionResponse;
+import com.example.VaultPay.wallet.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,9 +14,6 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final WalletRepository walletRepository;
 
-    /**
-     * USER: Can view ONLY their wallet transactions
-     */
     @PreAuthorize("#userId == authentication.principal.id")
     public Page<TransactionResponse> getUserTransactions(
             Long userId,
