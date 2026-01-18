@@ -1,4 +1,4 @@
-package com.vaultpay.auth.dto;
+package com.example.VaultPay.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
