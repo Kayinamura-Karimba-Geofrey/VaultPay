@@ -1,7 +1,7 @@
-package com.example.vaultpay.transaction;
+package com.example.VaultPay.transaction;
 
-import com.example.vaultpay.transaction.dto.*;
-import com.example.vaultpay.wallet.*;
+import com.example.VaultPay.transaction.dto.*;
+import com.example.VaultPay.wallet.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
