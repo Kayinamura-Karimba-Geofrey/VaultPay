@@ -1,6 +1,6 @@
-package com.vaultpay.security;
+package com.example.VaultPay.security;
 
-import com.vaultpay.user.UserRepository;
+import com.example.VaultPay.user.UserRepository;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
