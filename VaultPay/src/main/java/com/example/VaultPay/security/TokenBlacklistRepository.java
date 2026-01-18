@@ -1,4 +1,4 @@
-package com.vaultpay.security;
+package com.example.VaultPay.security;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
