@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
     private final PasswordEncorder passwordEncorder;
 
@@ -30,6 +31,17 @@ public class AuthController {
         user.setPassword(passwordEncorder.encode(user.getPassword()));
         userRepository.save(user);
         return "User registered successfully";
+
+    }
+    @PostMapping("/refresh")
+    public String refresh(@RequestParam String refreshToken){
+        String username= refreshTokenService.validateRefreshToken(refreshToken);
+        if(username==null){
+            throw new RuntimeException("Invalid refresh token");
+
+        }
+        var user= userRepository.findByUsername(username).get();
+        return jwtService.generateToken(user);
 
     }
 }

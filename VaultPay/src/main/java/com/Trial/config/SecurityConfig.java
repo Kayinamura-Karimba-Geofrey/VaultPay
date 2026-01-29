@@ -23,6 +23,8 @@ public service SecurityConfig{
         http
                 .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests("/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/user/**").hasRole("USER")
                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter,usernamePasswordAuthenticationFilter.class);
                 return http.build();
