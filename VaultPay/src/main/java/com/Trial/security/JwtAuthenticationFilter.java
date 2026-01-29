@@ -15,6 +15,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public Class JwtAuthenticationFilter extends OncePerRequestFilter{
     public final JwtService jwtService;
     public final  CustomUserDetailsService customUserDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
+
 
     @Override
      protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response , FilterChain  filterChain) throws java.io.IOException  jakarta.servlet.ServletException{
@@ -25,6 +27,10 @@ public Class JwtAuthenticationFilter extends OncePerRequestFilter{
 
     }
         String jwt = authHeader.substring(7);
+        if (tokenBlacklistService.isTokenBlacklisted(jwt)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String username= jwtService.extractUsername(jwt);
 
         if(username!=null&& SecurityContextHolder.getContext().getAuthentication()=null){
