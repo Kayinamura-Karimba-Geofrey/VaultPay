@@ -14,6 +14,8 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final TokenBlacklistService tokenBlacklistService;
+
     private final UserRepository userRepository;
     private final PasswordEncorder passwordEncorder;
 
@@ -43,5 +45,13 @@ public class AuthController {
         var user= userRepository.findByUsername(username).get();
         return jwtService.generateToken(user);
 
+    }
+    @PostMapping("/logout")
+    public  string logout(HttpServletRequest request){
+        String authHeader= request.getHeader("Authorisation");
+        if(authHeader!=null && authHeader.startsWith("Bearer")){
+            tokenBlacklistService.blacklistToken(authHeader.subString(7));
+        }
+        return "Logged out successfully";
     }
 }
