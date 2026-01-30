@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public service SecurityConfig{
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService userDetailsService;
+    private  final OAth2SuccessHandler oAth2SuccessHandler;
 
     @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -26,6 +27,9 @@ public service SecurityConfig{
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/user/**").hasRole("USER")
                 .anyRequest().authenticated())
+                .oauth2Login(oauth -> oauth
+                .successHandler(oAuth2SuccessHandler)
+        )
                 .addFilterBefore(jwtAuthenticationFilter,usernamePasswordAuthenticationFilter.class);
                 return http.build();
     }
