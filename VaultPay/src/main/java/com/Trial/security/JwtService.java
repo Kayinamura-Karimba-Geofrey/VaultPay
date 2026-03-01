@@ -1,31 +1,68 @@
-package com.VaultPay.security;
+package com.vaultpay.security;
+
 import io.jsonwebtoken.*;
-import org.springframework.security.core.userdetails.userDetails;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.security.Key;
+import java.util.Date;
+
 @Service
-public Class JwtService{
-    private static final String SECRET_KEY= 'mySecretKey123456';
-    private static final long EXPIRATION_TIME = 86400000;
+public class JwtService {
 
-    public string generateToken(UserDetails userDetails){
+    @Value("${jwt.secret}")
+    private String secret;
+
+    @Value("${jwt.access.expiration}")
+    private long accessExpiration;
+
+    @Value("${jwt.refresh.expiration}")
+    private long refreshExpiration;
+
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+    public String generateAccessToken(String email) {
+        return buildToken(email, accessExpiration);
+    }
+
+    public String generateRefreshToken(String email) {
+        return buildToken(email, refreshExpiration);
+    }
+
+    private String buildToken(String subject, long expiration) {
+
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expiration);
+
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(system.currentTimeMills()+ EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256,SECRET_KEY)
+                .setSubject(subject)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
-
     }
-    public string extractUsername(String token){
-        return getClaims(token).getExpiration().before(new Date());
 
+    public String extractEmail(String token) {
+        return extractClaims(token).getSubject();
     }
-    private  Claims getClaims(String token){
-        return Jwt.parser();
-        .setSigningKey(SECRET_KEY)
+
+    public boolean isTokenValid(String token) {
+        try {
+            extractClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private Claims extractClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
-
     }
-        }
+}
