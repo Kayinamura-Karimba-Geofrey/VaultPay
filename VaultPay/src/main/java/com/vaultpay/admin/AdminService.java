@@ -22,9 +22,6 @@ public class AdminService {
     private final AuditRepository auditRepository;
     private final AuditService auditService;
 
-    // ==============================
-    // 1️⃣ View All Users
-    // ==============================
     public Page<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
@@ -33,9 +30,6 @@ public class AdminService {
         return auditRepository.findAll(pageable);
     }
 
-    // ==============================
-    // 2️⃣ Lock User Account
-    // ==============================
     public void lockUser(Long userId, User admin) {
 
         User user = userRepository.findById(userId)
@@ -51,9 +45,6 @@ public class AdminService {
         );
     }
 
-    // ==============================
-    // 3️⃣ Unlock User Account
-    // ==============================
     public void unlockUser(Long userId, User admin) {
 
         User user = userRepository.findById(userId)
@@ -69,9 +60,6 @@ public class AdminService {
         );
     }
 
-    // ==============================
-    // 4️⃣ View Audit Logs
-    // ==============================
     public List<AuditLog> getAllAuditLogs() {
         return auditRepository.findAll();
     }
