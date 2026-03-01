@@ -38,10 +38,12 @@ public class AdminController {
     // 2️⃣ Lock User
     // ==============================
     @PostMapping("/users/{id}/lock")
-    public void lockUser(@PathVariable Long id,
-                         @AuthenticationPrincipal User admin) {
+    public ApiResponse<Void> lockUser(@PathVariable Long id,
+                                      @AuthenticationPrincipal User admin) {
 
         adminService.lockUser(id, admin);
+
+        return ResponseFactory.successMessage("User locked successfully");
     }
 
     // ==============================
