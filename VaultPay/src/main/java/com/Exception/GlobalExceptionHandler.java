@@ -11,9 +11,7 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ==========================
-    // 400 - Bad Request
-    // ==========================
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiError> handleBadRequest(
             IllegalArgumentException ex,
@@ -26,9 +24,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ==========================
-    // 401 - Unauthorized
-    // ==========================
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiError> handleBadCredentials(
             BadCredentialsException ex,
@@ -41,9 +37,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ==========================
-    // 404 - Not Found
-    // ==========================
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiError> handleRuntime(
             RuntimeException ex,
@@ -56,9 +50,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ==========================
-    // 500 - Internal Error
-    // ==========================
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(
             Exception ex,
