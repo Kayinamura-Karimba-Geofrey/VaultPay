@@ -6,6 +6,8 @@ import com.vaultpay.audit.AuditAction;
 import com.vaultpay.audit.AuditService;
 import com.vaultpay.user.User;
 import com.vaultpay.user.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,8 +25,12 @@ public class AdminService {
     // ==============================
     // 1️⃣ View All Users
     // ==============================
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    public Page<AuditLog> getAllAuditLogs(Pageable pageable) {
+        return auditRepository.findAll(pageable);
     }
 
     // ==============================
