@@ -23,17 +23,13 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final RateLimitFilter rateLimitFilter;
 
-    /**
-     * Main Security Filter Chain
-     */
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // Disable CSRF (stateless REST API)
-                .csrf(csrf -> csrf.disable())
 
-                // Stateless session (no HTTP session stored)
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -65,17 +61,12 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * BCrypt password hashing
-     */
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Authentication manager (used in login)
-     */
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config
