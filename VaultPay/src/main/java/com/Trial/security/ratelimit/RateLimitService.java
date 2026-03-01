@@ -16,8 +16,8 @@ public class RateLimitService {
 
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
 
-    private static final int MAX_TOKENS = 5;      // limit
-    private static final int REFILL_SECONDS = 60; // time window
+    private static final int MAX_TOKENS = 5;
+    private static final int REFILL_SECONDS = 60;
 
     public boolean allowRequest(String key) {
 

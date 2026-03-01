@@ -26,7 +26,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
         String ip = request.getRemoteAddr();
         String endpoint = request.getRequestURI();
 
-        // Apply strict limits only to sensitive endpoints
+
         if (endpoint.startsWith("/api/auth/login")
                 || endpoint.startsWith("/api/transfer")) {
 
