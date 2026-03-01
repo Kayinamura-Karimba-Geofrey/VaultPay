@@ -26,9 +26,12 @@ public class AdminController {
     // 1️⃣ View All Users
     // ==============================
     @GetMapping("/users")
-    public Page<UserResponse> getUsers(Pageable pageable) {
-        return adminService.getAllUsers(pageable)
+    public ApiResponse<Page<UserResponse>> getUsers(Pageable pageable) {
+
+        var page = adminService.getAllUsers(pageable)
                 .map(UserMapper::toResponse);
+
+        return ResponseFactory.success(page, "Users retrieved successfully");
     }
 
     // ==============================
