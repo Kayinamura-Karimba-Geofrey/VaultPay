@@ -23,12 +23,7 @@ public class TransferService {
     private final TransactionRepository transactionRepository;
     private final AuditService auditService;
 
-    /**
-     * MONEY TRANSFER
-     * - Atomic
-     * - Double-entry ledger
-     * - Audited ONLY after success
-     */
+
     @Transactional
     @PreAuthorize("#senderId == authentication.principal.id")
     public TransferResponse transfer(Long senderId, TransferRequest request) {
