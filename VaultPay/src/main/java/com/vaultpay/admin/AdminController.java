@@ -22,9 +22,6 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    // ==============================
-    // 1️⃣ View All Users
-    // ==============================
     @GetMapping("/users")
     public ApiResponse<Page<UserResponse>> getUsers(Pageable pageable) {
 
@@ -34,9 +31,7 @@ public class AdminController {
         return ResponseFactory.success(page, "Users retrieved successfully");
     }
 
-    // ==============================
-    // 2️⃣ Lock User
-    // ==============================
+
     @PostMapping("/users/{id}/lock")
     public ApiResponse<Void> lockUser(@PathVariable Long id,
                                       @AuthenticationPrincipal User admin) {
@@ -46,9 +41,7 @@ public class AdminController {
         return ResponseFactory.successMessage("User locked successfully");
     }
 
-    // ==============================
-    // 3️⃣ Unlock User
-    // ==============================
+
     @PostMapping("/users/{id}/unlock")
     public void unlockUser(@PathVariable Long id,
                            @AuthenticationPrincipal User admin) {
@@ -56,9 +49,6 @@ public class AdminController {
         adminService.unlockUser(id, admin);
     }
 
-    // ==============================
-    // 4️⃣ View Audit Logs
-    // ==============================
     @GetMapping("/audits")
     public Page<AuditLog> getAuditLogs(Pageable pageable) {
         return adminService.getAllAuditLogs(pageable);
