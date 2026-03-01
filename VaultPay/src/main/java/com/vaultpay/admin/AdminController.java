@@ -2,6 +2,11 @@ package com.vaultpay.admin;
 
 import com.vaultpay.audit.AuditLog;
 import com.vaultpay.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.vaultpay.user.dto.UserResponse;
+import com.vaultpay.mapper.UserMapper;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,8 +26,9 @@ public class AdminController {
     // 1️⃣ View All Users
     // ==============================
     @GetMapping("/users")
-    public List<User> getUsers() {
-        return adminService.getAllUsers();
+    public Page<UserResponse> getUsers(Pageable pageable) {
+        return adminService.getAllUsers(pageable)
+                .map(UserMapper::toResponse);
     }
 
     // ==============================
@@ -49,7 +55,7 @@ public class AdminController {
     // 4️⃣ View Audit Logs
     // ==============================
     @GetMapping("/audits")
-    public List<AuditLog> getAuditLogs() {
-        return adminService.getAllAuditLogs();
+    public Page<AuditLog> getAuditLogs(Pageable pageable) {
+        return adminService.getAllAuditLogs(pageable);
     }
 }
