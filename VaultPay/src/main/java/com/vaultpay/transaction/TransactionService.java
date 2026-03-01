@@ -33,9 +33,7 @@ public class TransactionService {
                 ));
     }
 
-    /**
-     * ADMIN / AUDITOR: Read-only access to ALL transactions
-     */
+
     @PreAuthorize("hasAnyRole('ADMIN','AUDITOR')")
     public Page<TransactionResponse> getAllTransactions(Pageable pageable) {
 
