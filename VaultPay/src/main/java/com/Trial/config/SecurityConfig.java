@@ -1,46 +1,85 @@
-package com.Trial.config;
-import com.Trial.security.JwtAuthenticationFilter;
-import com.Trial.security.CustomUserDetailsService;
+package com.vaultpay.config;
+
+import com.vaultpay.security.JwtAuthFilter;
+import com.vaultpay.security.RateLimitFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.configuration;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.builder.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BcryptPasswordEncorder;
-import  org.springframework.security.password.PasswordEncorder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthentication;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
-public service SecurityConfig{
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CustomUserDetailsService userDetailsService;
-    private  final OAth2SuccessHandler oAth2SuccessHandler;
+@EnableMethodSecurity
+public class SecurityConfig {
 
+    private final JwtAuthFilter jwtAuthFilter;
+    private final RateLimitFilter rateLimitFilter;
+
+    /**
+     * Main Security Filter Chain
+     */
     @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
-                .csrf(csrf->csrf.disable())
-                .authorizeHttpRequests("/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/user/**").hasRole("USER")
-                .anyRequest().authenticated())
-                .oauth2Login(oauth -> oauth
-                .successHandler(oAuth2SuccessHandler)
-        )
-                .addFilterBefore(jwtAuthenticationFilter,usernamePasswordAuthenticationFilter.class);
-                return http.build();
+                // Disable CSRF (stateless REST API)
+                .csrf(csrf -> csrf.disable())
+
+                // Stateless session (no HTTP session stored)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // Endpoint authorization rules
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/auth/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**"
+                        ).permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
+
+                // Security headers (OWASP protection)
+                .headers(headers -> headers
+                        .xssProtection(x -> x.block(true))
+                        .contentSecurityPolicy(csp ->
+                                csp.policyDirectives("default-src 'self'")
+                        )
+                        .frameOptions(frame -> frame.deny())
+                )
+
+                // Add filters
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
+
+    /**
+     * BCrypt password hashing
+     */
     @Bean
- public PasswordEncorder passwordEncorder(){
-        return new BCryptPasswordEncorder();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
+
+    /**
+     * Authentication manager (used in login)
+     */
     @Bean
-  public AuthenticationManager authenticationManager(
-          AuthenticationConfiguration config
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config
     ) throws Exception {
         return config.getAuthenticationManager();
     }
-        }
+}
