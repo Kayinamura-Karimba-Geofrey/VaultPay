@@ -1,45 +1,73 @@
-package com.VaultPay.security;
+package com.vaultpay.security;
 
-import jakarta.servlets.FilterChain;
+import com.vaultpay.user.UserRepository;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import  lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.securityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@component
-@RequiredArgsConstructor
-public Class JwtAuthenticationFilter extends OncePerRequestFilter{
-    public final JwtService jwtService;
-    public final  CustomUserDetailsService customUserDetailsService;
-    private final TokenBlacklistService tokenBlacklistService;
+import java.io.IOException;
 
+@Component
+@RequiredArgsConstructor
+public class JwtAuthFilter extends OncePerRequestFilter {
+
+    private final JwtService jwtService;
+    private final CustomUserDetailsService userDetailsService;
+    private final TokenBlacklistRepository blacklistRepository;
 
     @Override
-     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response , FilterChain  filterChain) throws java.io.IOException  jakarta.servlet.ServletException{
-        String authHeader= request.getHeader("Authorisation");
-        if (authHeader=null || !authHeader. startWith("Bearer")){
-            FilterChain.doFilter(Request, response )
-        return;
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
-    }
-        String jwt = authHeader.substring(7);
-        if (tokenBlacklistService.isTokenBlacklisted(jwt)) {
+        final String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        String username= jwtService.extractUsername(jwt);
 
-        if(username!=null&& SecurityContextHolder.getContext().getAuthentication()=null){
-            var userDetails= userDetailsService.loUserByUsername(username);
-            if(jwtService.isTokenvalid(jwt,userDetails)){
-                UsernamePasswordAuthenticationToken authToken= new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+        final String token = authHeader.substring(7);
+
+        // Check blacklist
+        if (blacklistRepository.existsByToken(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
-        filterChain.doFilter(request,response);
+
+        if (!jwtService.isTokenValid(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        String email = jwtService.extractEmail(token);
+
+        var userDetails = userDetailsService.loadUserByUsername(email);
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+
+        authentication.setDetails(
+                new WebAuthenticationDetailsSource()
+                        .buildDetails(request)
+        );
+
+        SecurityContextHolder.getContext()
+                .setAuthentication(authentication);
+
+        filterChain.doFilter(request, response);
+    }
 }
