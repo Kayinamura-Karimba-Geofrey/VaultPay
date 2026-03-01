@@ -31,13 +31,7 @@ public class AuthService {
     private final TokenBlacklistRepository blacklistRepository;
     private final AuditService auditService;
 
-    /**
-     * USER REGISTRATION
-     * - Hash password
-     * - Create wallet
-     * - Assign USER role
-     * - Issue tokens
-     */
+
     public AuthResponse register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -75,9 +69,7 @@ public class AuthService {
         );
     }
 
-    /**
-     * LOGIN
-     */
+
     public AuthResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
@@ -99,9 +91,7 @@ public class AuthService {
         );
     }
 
-    /**
-     * LOGOUT (blacklist token)
-     */
+
     public void logout(String token) {
 
         String email = jwtService.extractEmail(token);
