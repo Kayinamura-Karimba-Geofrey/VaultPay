@@ -28,18 +28,18 @@ public class TransferService {
             String idempotencyKey
     ) throws Exception {
 
-        // 1️⃣ Check idempotency
+
         var existing = idempotencyRepository.findByIdempotencyKey(idempotencyKey);
         if (existing.isPresent()) {
 
-            // Deserialize stored response
+
             return objectMapper.readValue(
                     existing.get().getResponseHash(),
                     TransferResult.class
             );
         }
 
-        // 2️⃣ Perform transfer
+
         if (senderWallet.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient balance");
         }
@@ -50,14 +50,14 @@ public class TransferService {
         walletRepository.save(senderWallet);
         walletRepository.save(recipientWallet);
 
-        // 3️⃣ Build result
+
         TransferResult result = TransferResult.builder()
                 .transactionId(System.currentTimeMillis())
                 .amount(amount)
                 .status("SUCCESS")
                 .build();
 
-        // 4️⃣ Store idempotency key
+
         String serialized = objectMapper.writeValueAsString(result);
 
         idempotencyRepository.save(
@@ -68,7 +68,7 @@ public class TransferService {
                         .build()
         );
 
-        // 5️⃣ Audit after success
+
         auditService.log(
                 AuditAction.MONEY_TRANSFERRED,
                 senderWallet.getOwner(),
