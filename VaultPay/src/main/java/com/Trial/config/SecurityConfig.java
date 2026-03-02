@@ -34,7 +34,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // Endpoint authorization rules
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // Security headers (OWASP protection)
+
                 .headers(headers -> headers
                         .xssProtection(x -> x.block(true))
                         .contentSecurityPolicy(csp ->
@@ -54,7 +54,7 @@ public class SecurityConfig {
                         .frameOptions(frame -> frame.deny())
                 )
 
-                // Add filters
+
                 .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
