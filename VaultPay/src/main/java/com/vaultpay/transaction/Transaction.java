@@ -1,6 +1,6 @@
 package com.vaultpay.transaction;
 
-import com.vaultpay.wallet.Wallet;
+import com.vaultpay.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -19,18 +20,16 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    private Wallet wallet;
-
-    @Enumerated(EnumType.STRING)
-    private TransactionType type;
-
-    @Column(nullable = false)
     private BigDecimal amount;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
 
-    @Column(nullable = false)
-    private String reference;
+    @ManyToOne
+    private User sender;
+
+    @ManyToOne
+    private User recipient;
+
+    private LocalDateTime createdAt;
 }
