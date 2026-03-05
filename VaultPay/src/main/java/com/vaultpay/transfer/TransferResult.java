@@ -12,4 +12,4 @@ public class TransferResult {
     private Long transactionId;
     private BigDecimal amount;
     private String status;
-}3
+}

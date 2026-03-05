@@ -1,7 +1,7 @@
 package com.vaultpay.security;
 
-import com.vaultpay.security.jwt.JwtAuthenticationFilter;
-import com.vaultpay.security.ratelimit.RateLimitFilter;
+import com.vaultpay.security.JwtAuthenticationFilter;
+import com.vaultpay.security.RateLimitFilter;
 
 import lombok.RequiredArgsConstructor;
 
