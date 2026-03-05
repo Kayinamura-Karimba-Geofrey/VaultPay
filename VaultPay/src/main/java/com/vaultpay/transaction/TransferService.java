@@ -1,8 +1,11 @@
-package com.vaultpay.transfer;
+package com.vaultpay.transaction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaultpay.audit.AuditAction;
 import com.vaultpay.audit.AuditService;
+import com.vaultpay.transfer.IdempotencyKey;
+import com.vaultpay.transfer.IdempotencyRepository;
+import com.vaultpay.transfer.TransferResult;
 import com.vaultpay.wallet.Wallet;
 import com.vaultpay.wallet.WalletRepository;
 

@@ -1,4 +1,4 @@
-package com.example.VaultPay;
+package com.vaultpay;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

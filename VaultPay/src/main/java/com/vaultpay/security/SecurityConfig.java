@@ -1,7 +1,5 @@
 package com.vaultpay.security;
 
-import com.vaultpay.security.JwtAuthenticationFilter;
-import com.vaultpay.security.RateLimitFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -84,7 +82,10 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers(
                                 "/api/auth/login",
-                                "/api/auth/register"
+                                "/api/auth/register",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
                         ).permitAll()
 
                         // Admin endpoints
