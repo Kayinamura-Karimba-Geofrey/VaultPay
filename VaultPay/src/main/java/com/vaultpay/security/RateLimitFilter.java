@@ -32,7 +32,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         if (!bucket.tryConsume(1)) {
-            response.setStatus(HttpServletResponse.SC_TOO_MANY_REQUESTS);
+            response.setStatus(429); // Too Many Requests
             response.getWriter().write("Too many requests");
             return;
         }
