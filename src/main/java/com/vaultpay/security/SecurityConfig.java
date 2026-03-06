@@ -32,17 +32,13 @@ public class SecurityConfig {
     private final RateLimitFilter rateLimitFilter;
     private final UserDetailsService userDetailsService;
 
-    // =========================================================
-    // PASSWORD ENCODER
-    // =========================================================
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // =========================================================
-    // AUTHENTICATION PROVIDER
-    // =========================================================
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -51,9 +47,7 @@ public class SecurityConfig {
         return provider;
     }
 
-    // =========================================================
-    // AUTHENTICATION MANAGER
-    // =========================================================
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config
@@ -61,25 +55,23 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    // =========================================================
-    // SECURITY FILTER CHAIN
-    // =========================================================
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // Disable CSRF (JWT based API)
+
                 .csrf(csrf -> csrf.disable())
 
-                // Stateless session (no server session storage)
+
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // Endpoint authorization rules
+
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public endpoints
+
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register",
@@ -90,21 +82,21 @@ public class SecurityConfig {
                                 "/actuator/info"
                         ).permitAll()
 
-                        // Admin endpoints
+
                         .requestMatchers("/api/admin/**")
                         .hasRole("ADMIN")
 
-                        // Everything else requires authentication
+
                         .anyRequest().authenticated()
                 )
 
-                // Authentication provider
+
                 .authenticationProvider(authenticationProvider())
 
-                // Add RateLimit BEFORE authentication
+
                 .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // Add JWT filter BEFORE UsernamePasswordAuthenticationFilter
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
