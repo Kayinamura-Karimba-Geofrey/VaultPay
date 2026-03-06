@@ -42,7 +42,7 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean enabled = true;
 
-    /* ========= Spring Security ========= */
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
